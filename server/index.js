@@ -100,7 +100,7 @@ app.get('/practitioner',
     const practitioners = await db('Practitioner')
       .select('*')
       .leftJoin('PractitionerRole', 'practitioner_role_id', 'PractitionerRole.id')
-      .rightJoin('Practitioner_Patient', 'Practitioner.id', 'Practitioner_Patient.Practitioner_id')
+      .rightJoin('Practitioner_Patient', 'Practitioner.id', 'Practitioner_Patient.practitioner_id')
       .where({ patient_id: patientId });
     return res.status(200).send(practitioners);
   });
@@ -117,11 +117,45 @@ app.put('/practitioner',
     });
 
     await db('Practitioner_Patient').insert({
-      Practitioner_id: practitionerId,
+      practitioner_id: practitionerId,
       patient_id: patientId,
     });
 
     return res.status(200).send();
+  });
+
+app.post('/message',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const senderId = req.user.id;
+    const receiverId = req.body.receiverId;
+    const message = req.body.message;
+    const document = req.body.document || null;
+
+    await db('Message').insert({
+      sender_id: senderId,
+      receiver_id: receiverId,
+      message,
+      document,
+      date: new Date(),
+    });
+
+    return res.status(200).send();
+  });
+
+app.get('/message',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const messages = await db('Message').select('*')
+      .where({
+        sender_id: req.user.id
+      })
+      .orWhere({
+        receiver_id: req.user.id
+      })
+      .orderBy('date');
+
+    return res.status(200).send(messages);
   });
 
 app.listen(5000, () => {
