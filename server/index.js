@@ -108,6 +108,37 @@ app.get('/practitioner',
 app.put('/practitioner',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
+    const addressToUpdate = req.body.address;
+    let practitionerToUpdate = req.body.practitioner;
+
+    if (addressToUpdate) {
+      const [{ address_id: addressId }] = await db('Practitioner').select('address_id').where({
+        user_id: req.user.id
+      });
+
+      if (addressId) {
+        await db('Address').update(addressToUpdate).where({
+          id: addressId
+        });
+      } else {
+        const [ addressId ] = await db('Address').insert(addressToUpdate);
+        practitionerToUpdate = practitionerToUpdate || {};
+        practitionerToUpdate.address_id = addressId;
+      }
+    }
+
+    if (practitionerToUpdate) {
+      await db('Practitioner').update(practitionerToUpdate).where({
+        user_id: req.user.id
+      });
+    }
+    
+    return res.status(200).send();
+  });
+
+app.post('/practitioner/select',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
     const [{ id: practitionerId }] = await db('Practitioner').select('id').where({
       user_id: req.body.practitionerId
     });
@@ -156,6 +187,37 @@ app.get('/message',
       .orderBy('date');
 
     return res.status(200).send(messages);
+  });
+
+app.put('/patient',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const addressToUpdate = req.body.address;
+    let patientToUpdate = req.body.patient;
+    
+    if (addressToUpdate) {
+      const [{ address_id: addressId }] = await db('Patient').select('address_id').where({
+        user_id: req.user.id
+      });
+
+      if (addressId) {
+        await db('Address').update(addressToUpdate).where({
+          id: addressId
+        });
+      } else {
+        const [ addressId ] = await db('Address').insert(addressToUpdate);
+        patientToUpdate = patientToUpdate || {};
+        patientToUpdate.address_id = addressId;
+      }
+    }
+
+    if (patientToUpdate) {
+      await db('Patient').update(patientToUpdate).where({
+        user_id: req.user.id
+      });
+    }
+
+    return res.status(200).send();
   });
 
 app.listen(5000, () => {
