@@ -38,6 +38,49 @@ app.post('/login',
     });
   });
 
+app.post('/signup', async (req, res) => {
+  const user = {
+    userId: req.body.userId,
+    email: req.body.email,
+    password: req.body.password,
+  };
+
+  const [{ count }] = await db('User')
+    .count('id as count')
+    .where({ userId: user.userId })
+    .orWhere({ email: user.email });
+
+  if (count) {
+    return res.status(409).send();
+  }
+
+  const [ userId ] = await db('User').insert(user);
+
+  const address = {
+    line: req.body.addressLine,
+    city: req.body.addressCity,
+    postalCode: req.body.addressPostalCode,
+    country: req.body.addressCountry,
+  };
+
+  const [ addressId ] = await db('Address').insert(address);
+
+  const patient = {
+    family: req.body.familyName,
+    given: req.body.givenName,
+    birthdate: req.body.birthDate,
+    phone: req.body.phone,
+    gender: req.body.gender,
+    language: req.body.language,
+    address_id: addressId,
+    user_id: userId,
+  };
+
+  await db('Patient').insert(patient);
+
+  return res.status(200).send();
+});
+
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
