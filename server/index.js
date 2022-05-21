@@ -56,27 +56,51 @@ app.post('/signup', async (req, res) => {
 
   const [ userId ] = await db('User').insert(user);
 
-  const address = {
-    line: req.body.addressLine,
-    city: req.body.addressCity,
-    postalCode: req.body.addressPostalCode,
-    country: req.body.addressCountry,
-  };
+  let address = null;
+  if (req.body.address) {
+    address = {
+      line: req.body.address.line,
+      city: req.body.address.city,
+      postalCode: req.body.address.postalCode,
+      country: req.body.address.country,
+    };
+  }
 
-  const [ addressId ] = await db('Address').insert(address);
+  let addressId = null;
+  if (address) {
+    ([ addressId ] = await db('Address').insert(address));
+  }
 
-  const patient = {
-    family: req.body.familyName,
-    given: req.body.givenName,
-    birthdate: req.body.birthDate,
-    phone: req.body.phone,
-    gender: req.body.gender,
-    language: req.body.language,
-    address_id: addressId,
-    user_id: userId,
-  };
+  if (req.body.patient) {
+    const patient = {
+      family: req.body.patient.family,
+      given: req.body.patient.given,
+      birthdate: req.body.patient.birthdate,
+      phone: req.body.patient.phone,
+      gender: req.body.patient.gender,
+      language: req.body.patient.language,
+      address_id: addressId,
+      user_id: userId,
+    };
+  
+    await db('Patient').insert(patient);
+  }
 
-  await db('Patient').insert(patient);
+  if (req.body.practitioner) {
+    const practitioner = {
+      family: req.body.practitioner.family,
+      given: req.body.practitioner.given,
+      birthdate: req.body.practitioner.birthdate,
+      phone: req.body.practitioner.phone,
+      gender: req.body.practitioner.gender,
+      language: req.body.practitioner.language,
+      address_id: addressId,
+      user_id: userId,
+      practitioner_role_id: req.body.practitioner.roleId,
+    };
+  
+    await db('Practitioner').insert(practitioner);
+  }
 
   return res.status(200).send();
 });
@@ -103,6 +127,13 @@ app.get('/practitioner',
       .rightJoin('Practitioner_Patient', 'Practitioner.id', 'Practitioner_Patient.practitioner_id')
       .where({ patient_id: patientId });
     return res.status(200).send(practitioners);
+  });
+
+app.get('/practitioner/roles',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const practitionerRoles = await db('PractitionerRole').select('*');
+    return res.status(200).send(practitionerRoles);
   });
 
 app.put('/practitioner',
