@@ -81,6 +81,49 @@ app.post('/signup', async (req, res) => {
   return res.status(200).send();
 });
 
+app.get('/practitioner/all',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const practitioners = await db('Practitioner')
+      .select('*')
+      .leftJoin('PractitionerRole', 'practitioner_role_id', 'PractitionerRole.id');
+    return res.status(200).send(practitioners);
+  });
+
+app.get('/practitioner',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const [{ id: patientId }] = await db('Patient').select('id').where({
+      user_id: req.user.id
+    });
+
+    const practitioners = await db('Practitioner')
+      .select('*')
+      .leftJoin('PractitionerRole', 'practitioner_role_id', 'PractitionerRole.id')
+      .rightJoin('Practitioner_Patient', 'Practitioner.id', 'Practitioner_Patient.Practitioner_id')
+      .where({ patient_id: patientId });
+    return res.status(200).send(practitioners);
+  });
+
+app.put('/practitioner',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const [{ id: practitionerId }] = await db('Practitioner').select('id').where({
+      user_id: req.body.practitionerId
+    });
+
+    const [{ id: patientId }] = await db('Patient').select('id').where({
+      user_id: req.user.id
+    });
+
+    await db('Practitioner_Patient').insert({
+      Practitioner_id: practitionerId,
+      patient_id: patientId,
+    });
+
+    return res.status(200).send();
+  });
+
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
