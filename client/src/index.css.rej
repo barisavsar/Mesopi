@@ -1,0 +1,11 @@
+diff a/client/src/index.css b/client/src/index.css	(rejected hunks)
+@@ -11,3 +11,8 @@ code {
+   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+     monospace;
+ }
++
++#root {
++  height: 100%;
++  overflow: hidden;
++}
+\ No newline at end of file

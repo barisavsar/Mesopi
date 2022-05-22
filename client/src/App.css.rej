@@ -1,0 +1,29 @@
+diff a/client/src/App.css b/client/src/App.css	(rejected hunks)
+@@ -1,5 +1,12 @@
+ .App {
+   text-align: center;
++  position: absolute;
++  top: 0;
++  right: 0;
++  bottom: 0;
++  left: 0;
++  display: flex;
++  flex-direction: column;
+ }
+ 
+ .App-logo {
+@@ -36,3 +43,13 @@
+     transform: rotate(360deg);
+   }
+ }
++
++html,body{height:100%;}
++.carousel,.item,.active{height:100%;}
++.carousel-inner{height:100%;}
++.carousel-inner>.item>img {
++  height:100%;
++}
++.MuiDropzoneArea-root {
++  height: 100%;
++}
+\ No newline at end of file
