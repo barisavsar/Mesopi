@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
@@ -7,6 +8,8 @@ require('./auth/auth.strategy');
 require('./auth/jwt.strategy');
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
@@ -109,8 +112,7 @@ app.get('/practitioner/all',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     const practitioners = await db('Practitioner')
-      .select('*')
-      .leftJoin('PractitionerRole', 'practitioner_role_id', 'PractitionerRole.id');
+      .select('*');
     return res.status(200).send(practitioners);
   });
 

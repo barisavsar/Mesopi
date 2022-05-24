@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import axios from 'axios';
+
 import {
     FormControl,
     TextField,
@@ -12,23 +14,23 @@ import {
 
 import PractitionerProfile from './PractitionerProfile.js';
 
-const practitioners = [{
-    id: '1',
-    name: 'John Legend',
-    speciality: 'Cardiology'
-}, {
-    id: '2',
-    name: 'Dua Lipa',
-    speciality: 'Aesthetic'
-}, {
-    id: '4',
-    name: 'Katy Perry',
-    speciality: 'Dermatology'
-}, {
-    id: '5',
-    name: 'Zayn Malik',
-    speciality: 'Urology'
-}];
+// const practitioners = [{
+//     id: '1',
+//     name: 'John Legend',
+//     speciality: 'Cardiology'
+// }, {
+//     id: '2',
+//     name: 'Dua Lipa',
+//     speciality: 'Aesthetic'
+// }, {
+//     id: '4',
+//     name: 'Katy Perry',
+//     speciality: 'Dermatology'
+// }, {
+//     id: '5',
+//     name: 'Zayn Malik',
+//     speciality: 'Urology'
+// }];
 
 const specialities = [{
     value: 'Cardiology',
@@ -61,8 +63,25 @@ export default class PractitionerList extends Component {
         super(props);
 
         this.state = {
-            speciality: null
+            speciality: null,
+            practitioners: [],
+            practitionerRoles: []
         };
+    }
+
+    async componentDidMount() {
+        debugger
+        let token = localStorage.getItem('user');
+        token = token.replace(/['"]+/g, '')
+        const AuthStr = 'Bearer ' + token;
+        const {data: practitionerRoles} = await axios.get(`http://localhost:5000/practitioner/roles`, { 'headers': { 'Authorization': AuthStr } });
+        console.log('practitionerRoles >>> ', practitionerRoles);
+        this.setState({ practitionerRoles });
+
+
+        const {data: practitioners} = await axios.get(`http://localhost:5000/practitioner/all`, { 'headers': { 'Authorization': AuthStr } });
+        console.log('practitioners >>> ', practitioners);
+        this.setState({ practitioners });
     }
 
     render() {
@@ -81,19 +100,19 @@ export default class PractitionerList extends Component {
                             <MenuItem value="">
                                 <em>All</em>
                             </MenuItem>
-                            {specialities.map(speciality => (
-                                <MenuItem value={speciality.value}>{speciality.label}</MenuItem>
+                            {this.state.practitionerRoles.map(practitionerRole => (
+                                <MenuItem value={practitionerRole.id}>{practitionerRole.specialty}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                 </div>}
                 <h1>Doctors</h1>
                 <div style={{ display: 'flex', flexWrap: 'wrap'}}>
-                    {practitioners.map(practitioner => (
+                    {this.state.practitioners.map(practitioner => (
                             <PractitionerProfile
-                                id={practitioner.id}
-                                name={practitioner.name}
-                                speciality={practitioner.speciality} />
+                                id={practitioner.user_id}
+                                name={`${practitioner.given} ${practitioner.family}`} 
+                                speciality={practitioner.specialty} />
                         )
                     )}
                 </div>

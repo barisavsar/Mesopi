@@ -44,6 +44,17 @@ export default class PatientConsultation extends Component {
 
     send = () => {
         // TODO: send the doctor
+
+        const senderId = localStorage.getItem('userId');
+
+        const data = {
+            senderId,
+            message: this.state.description
+        };
+
+        //await axios.post(`http://localhost:5000/message`, data);
+
+
         console.log(' >>> ', this.state)
     }
 

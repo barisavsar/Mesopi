@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
+import axios from 'axios';
 import {Navbar, Nav, NavDropdown,Form,FormControl,Button, Container} from  'react-bootstrap'
 
+const logout = () => {
+  localStorage.removeItem("user");
+};
 
 const NavbarContainer = () => {
+  const isLoggedIn = localStorage.getItem('user');
+
     return (
         <Navbar bg="light" expand="lg">
         <Container fluid>
-        <Navbar.Brand href="#">Mesopi - Online Doctor</Navbar.Brand>
+        <Navbar.Brand href="#">Mesopi - Medical Second Opinion</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -16,22 +22,12 @@ const NavbarContainer = () => {
       >
         <Nav.Link href="/">Home</Nav.Link>
         <Nav.Link href="/AboutUs">About Us</Nav.Link>
-        <NavDropdown title="Login" id="navbarScrollingDropdown">
-          <NavDropdown.Item href="/LoginPatients">Patients</NavDropdown.Item>
-          <NavDropdown.Item href="/LoginDoctors">Doctors</NavDropdown.Item>
-          <NavDropdown.Divider />
-          <NavDropdown.Item href="/LoginContact">
-            Contact
-          </NavDropdown.Item>
-        </NavDropdown>
-        <NavDropdown title="Sign Up" id="navbarScrollingDropdown">
-          <NavDropdown.Item href="/SignUpPatients">Patients</NavDropdown.Item>
-          <NavDropdown.Item href="/SignUpDoctors">Doctors</NavDropdown.Item>
-          <NavDropdown.Divider />
-          <NavDropdown.Item href="/SignUpContact">
-            Contact
-          </NavDropdown.Item>
-        </NavDropdown>
+        {!isLoggedIn && (
+          <NavDropdown title="Sign Up" id="navbarScrollingDropdown">
+            <NavDropdown.Item href="/signup/patient">Patients</NavDropdown.Item>
+            <NavDropdown.Item href="/signup/doctor">Doctor</NavDropdown.Item>          
+          </NavDropdown>
+        )}
       </Nav>
       <Form className="d-flex">
         <FormControl
@@ -42,6 +38,7 @@ const NavbarContainer = () => {
         />
         <Button variant="outline-success">Search</Button>
       </Form>
+      {isLoggedIn && <Nav.Link href="/" onClick={logout}>Logout</Nav.Link>}
     </Navbar.Collapse>
   </Container>
 </Navbar>

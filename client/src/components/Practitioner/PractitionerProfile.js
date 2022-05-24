@@ -20,16 +20,17 @@ export default class PractitionerProfile extends Component {
     }
 
     render () {
+        console.log(' >>>> ', this.props)
         return (
             <Card sx={{ display: 'flex', width: '250px', margin: '10px', padding: '10px' }}>
                 <CardContent sx={{ flex: '1 0 auto', flexDirection: 'column' }}>
                     <Box style={{ display: 'flex'}}>
                         <Box style={{flex: '1 0 auto', textAlign: 'left' }}>
-                            <Typography component="div" variant="h5">
+                            <Typography component="div">
                                 {this.props.name}
                             </Typography>
                             <Typography variant="subtitle1" color="text.secondary" component="div">
-                                {this.props.speciality}
+                                {this.props.specialty}
                             </Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1, width: '50px'}}>
@@ -39,7 +40,7 @@ export default class PractitionerProfile extends Component {
                         </Box>
                     </Box>
                     <Box>
-                        <Link to={`consultation?${this.props.id}`} className="btn" style={{ marginTop: '15px'}}>
+                        <Link to={`consultation?id=${this.props.id}`} className="btn" style={{ marginTop: '15px'}}>
                             <Button variant="outlined">
                                 Consult Now
                             </Button>

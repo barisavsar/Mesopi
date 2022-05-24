@@ -16,9 +16,17 @@ export default class Home extends Component{
         super(props);
 
         this.state = {
-            value: 'login'
+            value: 'login',
+            isLoggedIn: null
         }
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isLoggedIn !== this.state.isLoggedIn) {
+          this.setState({ isLoggedIn: nextProps.isLoggedIn });
+        }
+      }
+
     handleChange = (e, value) => {
         this.setState({
             value
@@ -26,20 +34,24 @@ export default class Home extends Component{
     }
 
     render(){
+        const isLoggedIn = this.state.isLoggedIn;
+        console.log(' is loo ', isLoggedIn)
+
         return(
             <div style={{ display: 'flex', flex: '1 1 auto'}} >
                 <div style={{ flex: 1}}>
                     <div style={{ display: 'flex', height: '100%', flexDirection: 'column'}}>
-                        <div style={{ flex: '1 1 auto', position: 'relative'}}>
+                        <div style={{ flex: '1 1 auto', height: '100%', position: 'relative'}}>
                             <CarouselContainer />
                         </div>
-                        <div style={{ maxHeight: '400px'}}>
+                        <div style={{ height: '200px'}}>
                             <PractitionerList filter={false} />
                         </div>
                     </div>
 
                 </div>
-                <Box style={{ width: '400px', padding: '20px'}} sx={{ boxShadow: 3 }}>
+                {!isLoggedIn && (
+                    <Box style={{ width: '400px', padding: '20px'}} sx={{ boxShadow: 3 }}>
                     <Box sx={{ width: '100%', typography: 'body1'}}>
                         <TabContext value={this.state.value}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -49,7 +61,7 @@ export default class Home extends Component{
                                 </TabList>
                             </Box>
                             <TabPanel value="login">
-                                <Login />
+                                <Login handleLogin={this.props.handleLogin} />
                             </TabPanel>
                             <TabPanel value="signup">
                                 <SignUp />
@@ -57,6 +69,8 @@ export default class Home extends Component{
                         </TabContext>
                     </Box>
                 </Box>
+                )}
+                
             </div>
         )
         

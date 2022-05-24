@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import axios from 'axios';
+
 export default class Login extends Component {
     constructor(props) {
         super(props);
@@ -15,24 +17,27 @@ export default class Login extends Component {
         this.setState(data);
     };
 
-    login = () => {
-        const { data } = this.state;
-
-        console.log(' DATA ', this.state);
+    login = async () => {
+        const data = this.state.data;
 
         // TODO: Login user
+        const { data: user } = await axios.post(`http://localhost:5000/login`, data);
+        debugger
+        localStorage.setItem('user', JSON.stringify(user.token));
+        localStorage.setItem('userId', JSON.stringify(user.id));
+        this.props.handleLogin(user.token);
     }
 
     render() {
         return (
-            <form onSubmit={this.login}>
+            <form>
                 <div className="mb-3">
                     <label>Email address</label>
                     <input
-                        type="email"
+                        type="userId"
                         className="form-control"
-                        placeholder="Enter email"
-                        onChange={e => this.onchange('email', e)}
+                        placeholder="Username"
+                        onChange={e => this.onchange('userId', e)}
                     />
                 </div>
                 <div className="mb-3">
@@ -57,7 +62,7 @@ export default class Login extends Component {
                     </div>
                 </div>
                 <div className="d-grid">
-                    <button type="submit" className="btn btn-primary">
+                    <button type="button" onClick={this.login} className="btn btn-primary">
                         Login
                     </button>
                 </div>
