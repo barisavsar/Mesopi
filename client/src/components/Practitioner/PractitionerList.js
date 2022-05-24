@@ -70,7 +70,6 @@ export default class PractitionerList extends Component {
     }
 
     async componentDidMount() {
-        debugger
         let token = localStorage.getItem('user');
         token = token.replace(/['"]+/g, '')
         const AuthStr = 'Bearer ' + token;

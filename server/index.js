@@ -33,10 +33,14 @@ app.post('/login',
 
     await db('User').update({ token }).where({ id: req.user.id });
 
+    const [{ count }] = await db('Practitioner').count('id as count').where({ user_id: req.user.id });
+    const role = count ? 'Practitioner' : 'Patient';
+
     res.status(200).send({
       id: req.user.id,
       userId: req.user.userId,
       email: req.user.email,
+      role,
       token,
     });
   });
@@ -112,7 +116,8 @@ app.get('/practitioner/all',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     const practitioners = await db('Practitioner')
-      .select('*');
+      .select('*')
+      .leftJoin('PractitionerRole', 'practitioner_role_id', 'PractitionerRole.id');
     return res.status(200).send(practitioners);
   });
 

@@ -20,11 +20,13 @@ export default class Login extends Component {
     login = async () => {
         const data = this.state.data;
 
-        // TODO: Login user
+        // Login user
         const { data: user } = await axios.post(`http://localhost:5000/login`, data);
-        debugger
+        console.log('~~~~ ', user);
+
         localStorage.setItem('user', JSON.stringify(user.token));
         localStorage.setItem('userId', JSON.stringify(user.id));
+        localStorage.setItem('userRole', 'Patient');
         this.props.handleLogin(user.token);
     }
 
@@ -32,7 +34,7 @@ export default class Login extends Component {
         return (
             <form>
                 <div className="mb-3">
-                    <label>Email address</label>
+                    <label>Username</label>
                     <input
                         type="userId"
                         className="form-control"

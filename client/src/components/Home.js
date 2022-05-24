@@ -35,7 +35,6 @@ export default class Home extends Component{
 
     render(){
         const isLoggedIn = this.state.isLoggedIn;
-        console.log(' is loo ', isLoggedIn)
 
         return(
             <div style={{ display: 'flex', flex: '1 1 auto'}} >
@@ -57,14 +56,10 @@ export default class Home extends Component{
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <TabList onChange={this.handleChange}>
                                     <Tab label="Login" value="login" />
-                                    <Tab label="Sign Up" value="signup" />
                                 </TabList>
                             </Box>
                             <TabPanel value="login">
                                 <Login handleLogin={this.props.handleLogin} />
-                            </TabPanel>
-                            <TabPanel value="signup">
-                                <SignUp />
                             </TabPanel>
                         </TabContext>
                     </Box>

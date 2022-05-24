@@ -32,6 +32,10 @@ export default class SignUp extends Component {
         const data = this.state.data;
         const form = this.state.form;
         data[form]['language'] = 'tr';
+
+        if (this.props.isPractitioner) {
+            data[form]['roleId'] = 1;
+        }
         // Save user
 
         axios.post(`http://localhost:5000/signup`, data)
@@ -53,7 +57,7 @@ export default class SignUp extends Component {
                         type="text"
                         className="form-control"
                         placeholder="First name"
-                        onChange={e => this.onchange([this.state.form, 'firstName'], e)}
+                        onChange={e => this.onchange([this.state.form, 'given'], e)}
                     />
                 </div>
                 <div className="mb-3">
@@ -62,7 +66,7 @@ export default class SignUp extends Component {
                         type="text"
                         className="form-control"
                         placeholder="Last name"
-                        onChange={e => this.onchange([this.state.form, 'lastName'], e)}
+                        onChange={e => this.onchange([this.state.form, 'family'], e)}
                     />
                 </div>
                 <div className="mb-3">
