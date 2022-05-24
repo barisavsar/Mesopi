@@ -32,12 +32,7 @@ export default class SignUp extends Component {
         const data = this.state.data;
         const form = this.state.form;
         data[form]['language'] = 'tr';
-
-        console.log(' DATA ', this.state);
-        debugger;
-
-
-        // TODO: Save user
+        // Save user
 
         axios.post(`http://localhost:5000/signup`, data)
     .then(res => {
