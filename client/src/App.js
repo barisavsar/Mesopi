@@ -36,10 +36,10 @@ function App() {
           <Route exact path="/signup/patient" element={<SignUp/>}/>
           <Route exact path="/signup/doctor" element={<SignUp isPractitioner={true}/>}/>
           <Route exact path="/Login/Patients" element={<loginPatients/>}/>
-          <Route exact path="/consultation/:id" element={<PatientConsultation/>}/>
+          <Route exact path="/consultation" element={<PatientConsultation/>}/>
           <Route exact path="/patient" element={<Patient/>}/>
           <Route exact path="/doctors" element={<PractitionerList filter={true}/>}/>
-          <Route exact path="/doctors/consultation/:id" element={<PatientConsultation/>}/>
+          <Route exact path="/doctors/consultation" element={<PatientConsultation/>}/>
         </Routes>
       </div>
   </BrowserRouter> 
